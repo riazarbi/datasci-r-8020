@@ -17,6 +17,9 @@ ARG r_packages="\
     "
 # Extrafont is for skimr
 
+# For TinyTex
+ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux
+
 # DEPENDENCIES ===================================================================
 
 RUN DEBIAN_FRONTEND=noninteractive \
@@ -49,13 +52,13 @@ RUN DEBIAN_FRONTEND=noninteractive \
  && apt-get install -y -V libparquet-dev \
 # Clean out cache
  && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
 
 # INSTALL R PACKAGES ========================================================
 
 # CRAN =======================
 
-RUN install2.r --error -n 3 -s --deps TRUE $r_packages \
+  && install2.r --error -n 3 -s --deps TRUE $r_packages \
 
 # NOT IN CRAN ================
 
@@ -69,13 +72,11 @@ RUN install2.r --error -n 3 -s --deps TRUE $r_packages \
   && cd .. \
   && rm -rf h3-r \
 # Python failover
-  && python3 -m pip install h3
+  && python3 -m pip install h3 \
 
 # TEX AND MICROSOFT FONTS ================================================
-
 # Install and setup Tex via tinytex
-ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux
-RUN wget -qO- \
+ && wget -qO- \
     "https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh" | \
     sh -s - --admin --no-path \
     && mv ~/.TinyTeX /opt/TinyTeX \
