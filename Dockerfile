@@ -4,6 +4,21 @@ LABEL authors="Riaz Arbi,Gordon Inggs"
 
 USER root
 
+# ARGS ===========================================================================
+
+ARG r_packages="\
+    tidyverse \
+    arrow \
+    reticulate \
+    skimr \
+    dataCompareR \
+    sf \
+    extrafont \
+    "
+# Extrafont is for skimr
+
+# DEPENDENCIES ===================================================================
+
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get clean && \
     DEBIAN_FRONTEND=noninteractive \
@@ -36,26 +51,17 @@ RUN DEBIAN_FRONTEND=noninteractive \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-# R PACKAGES ============================================================
+# INSTALL R PACKAGES ========================================================
 
-ARG r_packages="\
-    tidyverse \
-    arrow \
-    reticulate \
-    skimr \
-    dataCompareR \
-    sf \
-    extrafont \
-    "
-# Extrafont is for skimr
+# CRAN =======================
 
-RUN install2.r --error -n 3 -s --deps TRUE $r_packages 
+RUN install2.r --error -n 3 -s --deps TRUE $r_packages \
 
-# NOT IN CRAN
+# NOT IN CRAN ================
 
 # h3-r for uber h3 hex traversal
 # RUN git clone --single-branch --branch "feature/hex-ring" https://github.com/crazycapivara/h3-r.git \
-RUN git clone --single-branch --branch "feature/polyfill" https://github.com/crazycapivara/h3-r.git \
+  && git clone --single-branch --branch "feature/polyfill" https://github.com/crazycapivara/h3-r.git \
   && cd h3-r \
   && chmod +x install-h3c.sh \
   && bash ./install-h3c.sh \
@@ -81,14 +87,13 @@ RUN wget -qO- \
     && chown -R root:staff /usr/local/lib/R/site-library \
     && chmod -R g+w /opt/TinyTeX \
     && chmod -R g+wx /opt/TinyTeX/bin \
-    && echo "PATH=${PATH}" >> /usr/lib/R/etc/Renviron
+    && echo "PATH=${PATH}" >> /usr/lib/R/etc/Renviron \
 # Install and set up Microsoft fonts
-
-RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | \
-    debconf-set-selections \
+    && echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | \
+        debconf-set-selections \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer
 
-
+# BACK TO NB_USER ========================================================
 USER $NB_USER
-ENV PATH="${PATH}:/usr/lib/rstudio-server/bin"
+# ENV PATH="${PATH}:/usr/lib/rstudio-server/bin" # I think this is in the parent image
