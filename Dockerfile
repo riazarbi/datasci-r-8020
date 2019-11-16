@@ -75,7 +75,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # Python failover
   && python3 -m pip install h3 \
 # aws.s3
-  && RScript -e "install.packages('aws.s3', repos = c('cloudyr' = 'http://cloudyr.github.io/drat'))" \
+  && Rscript -e "install.packages('aws.s3', repos = c('cloudyr' = 'http://cloudyr.github.io/drat'))" \
 
 # TEX AND MICROSOFT FONTS ================================================
 # Install and setup Tex via tinytex
