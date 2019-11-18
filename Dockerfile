@@ -23,6 +23,8 @@ ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux
 
 # DEPENDENCIES ===================================================================
 
+ADD init_kableextra.Rmd /
+
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get clean && \
     DEBIAN_FRONTEND=noninteractive \
@@ -31,6 +33,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libcairo2-dev \
     libudunits2-dev \
     libpq-dev \
+# pandoc for PDF rendering 
+    pandoc \
 # sf system packages
  && apt-get install -y software-properties-common \
  && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
@@ -96,7 +100,11 @@ RUN DEBIAN_FRONTEND=noninteractive \
     && echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | \
         debconf-set-selections \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer \
+# Knit a kableExtra sample Rmd to force download of relevant Tex packages
+    && Rscript -e "rmarkdown::render(/init_kableextra.Rmd)" \
+    && rm /init_kableextra.Rmd \
+    && rm /init_baleextra.pdf
 
 # BACK TO NB_USER ========================================================
 USER $NB_USER
