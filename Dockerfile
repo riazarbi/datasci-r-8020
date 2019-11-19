@@ -103,7 +103,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer \
 # Knit a kableExtra sample Rmd to force download of relevant Tex packages
-    && Rscript -e "rmarkdown::render(/init_kableextra.Rmd)" \
+    && Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
     && rm /init_kableextra.Rmd \
     && rm /init_baleextra.pdf
 
