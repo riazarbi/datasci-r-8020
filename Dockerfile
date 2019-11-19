@@ -105,7 +105,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # Knit a kableExtra sample Rmd to force download of relevant Tex packages
     && Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
     && rm /init_kableextra.Rmd \
-    && rm /init_baleextra.pdf
+    && rm /init_kableextra.pdf
 
 # BACK TO NB_USER ========================================================
 USER $NB_USER
