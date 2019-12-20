@@ -16,6 +16,7 @@ ARG r_packages="\
     extrafont \
     aws.s3 \
     kableExtra \
+    RPresto \
     "
 # Extrafont is for skimr
 
