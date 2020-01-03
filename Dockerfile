@@ -71,7 +71,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
 
 # h3-r for uber h3 hex traversal
 # RUN git clone --single-branch --branch "feature/hex-ring" https://github.com/crazycapivara/h3-r.git \
-  && git clone --single-branch --branch "feature/polyfill" https://github.com/crazycapivara/h3-r.git \
+  && git clone --single-branch --branch "master" https://github.com/crazycapivara/h3-r.git \
   && cd h3-r \
   && chmod +x install-h3c.sh \
   && bash ./install-h3c.sh \
