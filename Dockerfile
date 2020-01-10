@@ -36,6 +36,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libcairo2-dev \
     libudunits2-dev \
     libpq-dev \
+    libmagick++-dev \
 # pandoc for PDF rendering 
     pandoc \
 # sf system packages
