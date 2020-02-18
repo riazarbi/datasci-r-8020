@@ -23,6 +23,7 @@ ARG r_packages="\
 
 # For TinyTex
 ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux
+ENV LIBARROW_DOWNLOAD=true
 
 # DEPENDENCIES ===================================================================
 
@@ -52,13 +53,13 @@ RUN DEBIAN_FRONTEND=noninteractive \
     gdal-bin \
  && apt-get purge -y software-properties-common \
 # arrow system packages
- && wget -O /usr/share/keyrings/apache-arrow-keyring.gpg https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg \
- && echo deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main >> /etc/apt/sources.list.d/apache-arrow.list \
- && echo deb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main >> /etc/apt/sources.list.d/apache-arrow.list \
- && cat /etc/apt/sources.list.d/apache-arrow.list \
- && DEBIAN_FRONTEND=noninteractive \
-    apt update \
- && apt-get install -y -V libparquet-dev \
+# && wget -O /usr/share/keyrings/apache-arrow-keyring.gpg https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg \
+# && echo deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main >> /etc/apt/sources.list.d/apache-arrow.list \
+# && echo deb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main >> /etc/apt/sources.list.d/apache-arrow.list \
+# && cat /etc/apt/sources.list.d/apache-arrow.list \
+# && DEBIAN_FRONTEND=noninteractive \
+#    apt update \
+# && apt-get install -y -V libparquet-dev \
 # Clean out cache
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* \
