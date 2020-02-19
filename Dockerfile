@@ -14,7 +14,6 @@ ARG r_packages="\
     dataCompareR \
     sf \
     extrafont \
-    aws.s3 \
     kableExtra \
     RPresto \
     pryr \
