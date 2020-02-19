@@ -17,6 +17,8 @@ ARG r_packages="\
     kableExtra \
     RPresto \
     pryr \
+    # h3 dependency
+    digest \
     "
 # Extrafont is for skimr
 
@@ -51,29 +53,20 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libproj-dev \
     gdal-bin \
  && apt-get purge -y software-properties-common \
-# arrow system packages
-# && wget -O /usr/share/keyrings/apache-arrow-keyring.gpg https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg \
-# && echo deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main >> /etc/apt/sources.list.d/apache-arrow.list \
-# && echo deb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main >> /etc/apt/sources.list.d/apache-arrow.list \
-# && cat /etc/apt/sources.list.d/apache-arrow.list \
-# && DEBIAN_FRONTEND=noninteractive \
-#    apt update \
-# && apt-get install -y -V libparquet-dev \
 # Clean out cache
  && apt-get clean \
- && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /var/lib/apt/lists/* 
 
 # INSTALL R PACKAGES ========================================================
 
 # CRAN =======================
 
-  && install2.r --error -n 3 -s --deps TRUE $r_packages \
+RUN install2.r --error -n 3 -s --deps TRUE $r_packages 
 
 # NOT IN CRAN ================
 
 # h3-r for uber h3 hex traversal
-# RUN git clone --single-branch --branch "feature/hex-ring" https://github.com/crazycapivara/h3-r.git \
-  && git clone --single-branch --branch "master" https://github.com/crazycapivara/h3-r.git \
+RUN git clone --single-branch --branch "master" https://github.com/crazycapivara/h3-r.git \
   && cd h3-r \
   && chmod +x install-h3c.sh \
   && bash ./install-h3c.sh \
@@ -81,35 +74,32 @@ RUN DEBIAN_FRONTEND=noninteractive \
   && cd .. \
   && rm -rf h3-r \
 # Python failover
-  && python3 -m pip install h3 \
-# aws.s3
-  && Rscript -e "install.packages('aws.s3', repos = c('cloudyr' = 'http://cloudyr.github.io/drat'))" \
+  && python3 -m pip install h3 
 
 # TEX AND MICROSOFT FONTS ================================================
 # Install and setup Tex via tinytex
- && wget -qO- \
+RUN wget -qO- \
     "https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh" | \
     sh -s - --admin --no-path \
-    && mv ~/.TinyTeX /opt/TinyTeX \
-    && /opt/TinyTeX/bin/*/tlmgr path add \
-    && tlmgr install metafont mfware inconsolata tex ae parskip listings \
-    && tlmgr path add \
-    && Rscript -e "tinytex::r_texmf()" \
-    && chown -R root:staff /opt/TinyTeX \
-    && chown -R root:staff /usr/local/lib/R/site-library \
-    && chmod -R g+w /opt/TinyTeX \
-    && chmod -R g+wx /opt/TinyTeX/bin \
-    && echo "PATH=${PATH}" >> /usr/lib/R/etc/Renviron \
+ && mv ~/.TinyTeX /opt/TinyTeX \
+ && /opt/TinyTeX/bin/*/tlmgr path add \
+ && tlmgr install metafont mfware inconsolata tex ae parskip listings \
+ && tlmgr path add \
+ && Rscript -e "tinytex::r_texmf()" \
+ && chown -R root:staff /opt/TinyTeX \
+ && chown -R root:staff /usr/local/lib/R/site-library \
+ && chmod -R g+w /opt/TinyTeX \
+ && chmod -R g+wx /opt/TinyTeX/bin \
+ && echo "PATH=${PATH}" >> /usr/lib/R/etc/Renviron \
 # Install and set up Microsoft fonts
-    && echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | \
-        debconf-set-selections \
-    && DEBIAN_FRONTEND=noninteractive apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer \
+ && echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | \
+     debconf-set-selections \
+ && DEBIAN_FRONTEND=noninteractive apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer \
 # Knit a kableExtra sample Rmd to force download of relevant Tex packages
-    && Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
-    && rm /init_kableextra.Rmd \
-    && rm /init_kableextra.pdf
+ && Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
+ && rm /init_kableextra.Rmd \
+ && rm /init_kableextra.pdf
 
 # BACK TO NB_USER ========================================================
 USER $NB_USER
-# ENV PATH="${PATH}:/usr/lib/rstudio-server/bin" # I think this is in the parent image
