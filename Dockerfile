@@ -19,6 +19,8 @@ ARG r_packages="\
     pryr \
     # h3 dependency
     digest \
+    Rcpp \
+    cli \
     "
 # Extrafont is for skimr
 
