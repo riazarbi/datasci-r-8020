@@ -21,6 +21,8 @@ ARG r_packages="\
     digest \
     Rcpp \
     cli \
+    rJava \
+    RJDBC \
     "
 # Extrafont is for skimr
 
