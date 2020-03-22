@@ -12,7 +12,7 @@ ARG r_packages="\
     reticulate \
     skimr \
     dataCompareR \
-    sf \
+  # Extrafont is for skimr
     extrafont \
     kableExtra \
     RPresto \
@@ -24,14 +24,14 @@ ARG r_packages="\
     rJava \
     RJDBC \
     "
-# Extrafont is for skimr
-
+    
 # For TinyTex
 ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux
+
+# For arrow to install bindings
 ENV LIBARROW_DOWNLOAD=true
 
 # DEPENDENCIES ===================================================================
-
 ADD init_kableextra.Rmd /
 
 RUN DEBIAN_FRONTEND=noninteractive \
@@ -62,12 +62,13 @@ RUN DEBIAN_FRONTEND=noninteractive \
  && rm -rf /var/lib/apt/lists/* 
 
 # INSTALL R PACKAGES ========================================================
-
 # CRAN =======================
 
 RUN install2.r --error -n 3 -s --deps TRUE $r_packages 
 
 # NOT IN CRAN ================
+RUN R -e "remotes::install_github('r-spatial/sf')"
+RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
 
 # h3-r for uber h3 hex traversal
 RUN git clone --single-branch --branch "master" https://github.com/crazycapivara/h3-r.git \
