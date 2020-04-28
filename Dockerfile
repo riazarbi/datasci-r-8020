@@ -11,7 +11,6 @@ ARG r_packages="\
     arrow \
     reticulate \
     skimr \
-    dataCompareR \
   # Extrafont is for skimr
     extrafont \
     kableExtra \
