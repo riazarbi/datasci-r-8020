@@ -15,6 +15,7 @@ ARG r_packages="\
     extrafont \
     kableExtra \
     RPresto \
+    ckanr \
     pryr \
     # h3 dependency
     digest \
