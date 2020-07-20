@@ -6,7 +6,8 @@ USER root
 
 # ARGS ===========================================================================
 
-ARG r_packages="\
+ARG r_packages=" \
+    devtools \
     tidyverse \
     arrow \
     reticulate \
@@ -49,8 +50,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # pandoc for PDF rendering 
     pandoc \
 # sf system packages
- && apt-get install -y software-properties-common \
- && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
+# && apt-get install -y software-properties-common \
+# && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
  && DEBIAN_FRONTENG=noninteractive \
     apt-get update \
  && apt-get install -y \
@@ -59,7 +60,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libgeos-dev \
     libproj-dev \
     gdal-bin \
- && apt-get purge -y software-properties-common \
+# && apt-get purge -y software-properties-common \
 # Clean out cache
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* 
@@ -67,7 +68,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # INSTALL R PACKAGES ========================================================
 # CRAN =======================
 
-RUN install2.r --error -n 3 -s --deps TRUE $r_packages 
+RUN install2.r --error -n 7 -s --deps TRUE $r_packages 
 
 # NOT IN CRAN ================
 RUN R -e "remotes::install_github('r-spatial/sf')"
@@ -108,6 +109,7 @@ RUN wget -qO- \
  && Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
  && rm /init_kableextra.Rmd \
  && rm /init_kableextra.pdf \
+
 # R JAVA PATH FIX ========================================================
  && R CMD javareconf
 
