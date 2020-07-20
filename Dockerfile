@@ -108,8 +108,7 @@ RUN wget -qO- \
 # Knit a kableExtra sample Rmd to force download of relevant Tex packages
  && Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
  && rm /init_kableextra.Rmd \
- && rm /init_kableextra.pdf 
-
+ && rm /init_kableextra.pdf \
 # R JAVA PATH FIX ========================================================
  && R CMD javareconf
 
