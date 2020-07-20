@@ -21,8 +21,11 @@ ARG r_packages="\
     digest \
     Rcpp \
     cli \
+    # DB utils
     rJava \
     RJDBC \
+    # graphics 
+    plotly \
     "
     
 # For TinyTex
