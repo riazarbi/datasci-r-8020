@@ -71,7 +71,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
 RUN install2.r --error -n 7 -s --deps TRUE $r_packages 
 
 # NOT IN CRAN ================
-RUN R -e "remotes::install_github('r-spatial/sf')"
+RUN R -e "remotes::install_github('r-spatial/sf', dependencies = TRUE)"
 RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
 
 # h3-r for uber h3 hex traversal
