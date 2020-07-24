@@ -71,7 +71,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # INSTALL R PACKAGES ========================================================
 # CRAN =======================
 
-RUN install2.r --error -n 7 -s --deps TRUE $r_packages 
+RUN install2.r --error -n 2 -s --deps TRUE $r_packages 
 
 # NOT IN CRAN ================
 #RUN R -e "remotes::install_github('r-spatial/sf', dependencies = TRUE)"
