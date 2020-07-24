@@ -30,7 +30,8 @@ ARG r_packages=" \
     # spatial
     sf \
     "
-    
+RUN echo $r_packages
+
 # For TinyTex
 ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux
 
