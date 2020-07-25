@@ -1,4 +1,4 @@
-FROM riazarbi/datasci-gui-minimal:latest
+FROM riazarbi/datasci-gui-minimal:bionic
 
 LABEL authors="Riaz Arbi,Gordon Inggs"
 
