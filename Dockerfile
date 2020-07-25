@@ -28,7 +28,8 @@ ARG r_packages=" \
     # graphics 
     plotly \
     # spatial
-    sf \
+    #XML \
+    #sf \
     "
 RUN echo $r_packages
 
@@ -63,6 +64,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libgeos-dev \
     libproj-dev \
     gdal-bin \
+# All recommended R packages in apt \
+    r-recommended \
 # && apt-get purge -y software-properties-common \
 # Clean out cache
  && apt-get clean \
@@ -71,7 +74,9 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # INSTALL R PACKAGES ========================================================
 # CRAN =======================
 
-RUN install2.r --error -s --deps TRUE $r_packages 
+RUN install2.r --error -s --deps TRUE $r_packages \
+# For some reason sf needs to install after the preceding packages are completed
+ && R -e "install.packages('sf')"
 
 # NOT IN CRAN ================
 #RUN R -e "remotes::install_github('r-spatial/sf', dependencies = TRUE)"
