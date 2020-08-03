@@ -1,5 +1,4 @@
-FROM riazarbi/datasci-gui-minimal:latest
-
+FROM riazarbi/datasci-gui-minimal:focal
 LABEL authors="Riaz Arbi,Gordon Inggs"
 
 USER root
