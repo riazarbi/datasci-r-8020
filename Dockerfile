@@ -51,6 +51,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libmagick++-dev \
 # pandoc for PDF rendering 
     pandoc \
+# for pkgdown
+    libharfbuzz-dev libfribidi-dev \
 # sf system packages
 # && apt-get install -y software-properties-common \
 # && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
