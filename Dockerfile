@@ -36,6 +36,7 @@ ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux
 
 # For arrow to install bindings
 ENV LIBARROW_DOWNLOAD=true
+ENV LIBARROW_MINIMAL=false
 
 # DEPENDENCIES ===================================================================
 ADD init_kableextra.Rmd /
