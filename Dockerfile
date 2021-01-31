@@ -28,6 +28,8 @@ ARG r_packages=" \
     plotly \
     # spatial
     sf \
+    drake \
+    targets \
     "
 RUN echo $r_packages
 
@@ -50,7 +52,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libudunits2-dev \
     libpq-dev \
     libmagick++-dev \
-# pandoc for PDF rendering 
+    libzmq3-dev \
+# pandoc for PDF rendering
     pandoc \
 # for pkgdown
     libharfbuzz-dev libfribidi-dev \
@@ -92,26 +95,29 @@ RUN git clone --single-branch --branch "master" https://github.com/crazycapivara
 
 # TEX AND MICROSOFT FONTS ================================================
 # Install and setup Tex via tinytex
-RUN wget -qO- \
-    "https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh" | \
-    sh -s - --admin --no-path \
- && mv ~/.TinyTeX /opt/TinyTeX \
- && /opt/TinyTeX/bin/*/tlmgr path add \
- && tlmgr install metafont mfware inconsolata tex ae parskip listings \
- && tlmgr path add \
- && Rscript -e "tinytex::r_texmf()" \
- && chown -R root:staff /opt/TinyTeX \
- && chown -R root:staff /usr/local/lib/R/site-library \
- && chmod -R g+w /opt/TinyTeX \
- && chmod -R g+wx /opt/TinyTeX/bin \
- && echo "PATH=${PATH}" >> /usr/lib/R/etc/Renviron \
+ENV CTAN_REPO="https://ctan.math.ca/tex-archive/systems/texlive/tlnet/"
+RUN echo tmp && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
+  | sh -s - --admin --no-path
+
+RUN mv ~/.TinyTeX /opt/TinyTeX \
+ && /opt/TinyTeX/bin/*/tlmgr path add 
+
+RUN tlmgr install metafont mfware inconsolata tex ae parskip listings colortbl \
+ && tlmgr path add 
+
+RUN Rscript -e "tinytex::r_texmf()" 
+RUN chmod -R g+w /opt/TinyTeX 
+RUN chmod -R g+wx /opt/TinyTeX/bin 
+RUN echo "PATH=${PATH}" >> /usr/lib/R/etc/Renviron 
+
 # Install and set up Microsoft fonts
- && echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | \
-     debconf-set-selections \
- && DEBIAN_FRONTEND=noninteractive apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer \
+RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | \
+     debconf-set-selections 
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer 
+
 # Knit a kableExtra sample Rmd to force download of relevant Tex packages
- && Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
+RUN Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
  && rm /init_kableextra.Rmd \
  && rm /init_kableextra.pdf \
 # R JAVA PATH FIX ========================================================
