@@ -73,6 +73,10 @@ RUN DEBIAN_FRONTEND=noninteractive \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* 
 
+# Increase Magick resource limits
+RUN sed -i '/policy domain="resource" name="memory"/c\  <policy domain="resource" name="memory" value="10GiB"/>' /etc/ImageMagick-6/policy.xml
+RUN sed -i '/policy domain="resource" name="disk"/c\  <policy domain="resource" name="disk" value="10GiB"/>' /etc/ImageMagick-6/policy.xml
+
 # INSTALL R PACKAGES ========================================================
 # CRAN =======================
 
