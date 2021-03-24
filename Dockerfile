@@ -29,7 +29,7 @@ ARG r_packages=" \
     # spatial
     sf \
     drake \
-    targets \
+    #targets \ COMMENT: using github for now to benefit from arrow support
     "
 RUN echo $r_packages
 
@@ -83,7 +83,7 @@ RUN sed -i '/policy domain="resource" name="disk"/c\  <policy domain="resource" 
 RUN install2.r --error -s --deps TRUE $r_packages 
 
 # NOT IN CRAN ================
-#RUN R -e "remotes::install_github('r-spatial/sf', dependencies = TRUE)"
+RUN R -e "remotes::install_github('ropensci/targets', dependencies = TRUE)"
 #RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
 
 # h3-r for uber h3 hex traversal
