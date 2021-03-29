@@ -30,6 +30,7 @@ ARG r_packages=" \
     sf \
     drake \
     #targets \ COMMENT: using github for now to benefit from arrow support
+    tarchetypes \
     "
 RUN echo $r_packages
 
