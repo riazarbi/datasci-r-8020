@@ -11,6 +11,7 @@ ARG r_packages=" \
     arrow \
     reticulate \
     skimr \
+    caret \
   # Extrafont is for skimr
     extrafont \
     kableExtra \
