@@ -88,6 +88,9 @@ RUN install2.r --error -s --deps TRUE $r_packages
 RUN R -e "remotes::install_github('ropensci/targets', dependencies = TRUE)"
 #RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
 
+# TEMPORARY PATCH FOR AWS S3 R PACKAGE NOT WORKING WITH NEW REGIONS ==========
+RUN R -e "remotes::install_github('cityofcapetown/aws.s3.patch', dependencies = TRUE)"
+
 # h3-r for uber h3 hex traversal
 RUN git clone --single-branch --branch "master" https://github.com/crazycapivara/h3-r.git \
   && cd h3-r \
