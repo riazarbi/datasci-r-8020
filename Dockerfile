@@ -34,7 +34,7 @@ ARG r_packages=" \
     tarchetypes \
     "
 RUN echo $r_packages
-
+RUN echo $R_LIBS_SITE 
 # For TinyTex
 ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux
 
@@ -73,7 +73,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # && apt-get purge -y software-properties-common \
 # Clean out cache
  && apt-get clean \
- && rm -rf /var/lib/apt/lists/* 
+ && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /tmp/*
 
 # Increase Magick resource limits
 RUN sed -i '/policy domain="resource" name="memory"/c\  <policy domain="resource" name="memory" value="10GiB"/>' /etc/ImageMagick-6/policy.xml
@@ -82,14 +83,16 @@ RUN sed -i '/policy domain="resource" name="disk"/c\  <policy domain="resource" 
 # INSTALL R PACKAGES ========================================================
 # CRAN =======================
 
-RUN install2.r --error -s --deps TRUE $r_packages 
+RUN  install2.r -e -n 3 -s --deps TRUE -l $R_LIBS_SITE  $r_packages 
 
 # NOT IN CRAN ================
-RUN R -e "remotes::install_github('ropensci/targets', dependencies = TRUE)"
+RUN R -e "remotes::install_github('ropensci/targets', dependencies = TRUE)" \
+ && rm -rf /tmp/*
 #RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
 
 # TEMPORARY PATCH FOR AWS S3 R PACKAGE NOT WORKING WITH NEW REGIONS ==========
-RUN R -e "remotes::install_github('cityofcapetown/aws.s3.patch', dependencies = TRUE)"
+RUN R -e "remotes::install_github('cityofcapetown/aws.s3.patch', dependencies = TRUE)" \
+ && rm -rf /tmp/*
 
 # h3-r for uber h3 hex traversal
 RUN git clone --single-branch --branch "master" https://github.com/crazycapivara/h3-r.git \
@@ -100,7 +103,8 @@ RUN git clone --single-branch --branch "master" https://github.com/crazycapivara
   && cd .. \
   && rm -rf h3-r \
 # Python failover
-  && python3 -m pip install h3 
+  && python3 -m pip install h3 \
+  && rm -rf /tmp/*
 
 # TEX AND MICROSOFT FONTS ================================================
 # Install and setup Tex via tinytex
@@ -123,12 +127,18 @@ RUN echo "PATH=${PATH}" >> /usr/lib/R/etc/Renviron
 RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | \
      debconf-set-selections 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer 
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer \
+ # Clean out cache
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /tmp/*
 
 # Knit a kableExtra sample Rmd to force download of relevant Tex packages
 RUN Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
  && rm /init_kableextra.Rmd \
- && rm /init_kableextra.pdf 
+ && rm /init_kableextra.pdf \
+# Clean out cache
+ && rm -rf /tmp/*
  
 # PYTHON REQUIREMENTS FOR CCT DB-UTILS ===================================
 RUN python3 -m pip install "pandas>=1.2.0" \
