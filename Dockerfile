@@ -83,7 +83,7 @@ RUN sed -i '/policy domain="resource" name="disk"/c\  <policy domain="resource" 
 # INSTALL R PACKAGES ========================================================
 # CRAN =======================
 
-RUN  install2.r -e TRUE -s TRUE -n 3 --deps TRUE -l $R_LIBS_SITE  $r_packages 
+RUN  install2.r --skipinstalled TRUE --error TRUE --ncpus 3 --deps TRUE -l $R_LIBS_SITE  $r_packages 
 
 # NOT IN CRAN ================
 RUN R -e "remotes::install_github('ropensci/targets', dependencies = TRUE)" \
