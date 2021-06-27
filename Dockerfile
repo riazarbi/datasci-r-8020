@@ -12,6 +12,7 @@ ARG r_packages=" \
     reticulate \
     skimr \
     caret \
+    openxlsx \
   # Extrafont is for skimr
     extrafont \
     kableExtra \
