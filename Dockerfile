@@ -116,7 +116,7 @@ RUN echo tmp && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
 RUN mv ~/.TinyTeX /opt/TinyTeX \
  && /opt/TinyTeX/bin/*/tlmgr path add 
 
-RUN tlmgr install metafont mfware inconsolata tex ae parskip listings colortbl \
+RUN tlmgr install metafont mfware inconsolata tex ae parskip listings colortbl makeindex \
  && tlmgr path add 
 
 RUN Rscript -e "tinytex::r_texmf()" 
