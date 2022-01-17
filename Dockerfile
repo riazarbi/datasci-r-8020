@@ -150,6 +150,7 @@ RUN python3 -m pip install "pandas>=1.2.0" \
  && python3 -m pip install "pyarrow>=3.0.0" \
  && python3 -m pip install "fsspec>=0.8.5" \
  && python3 -m pip install "s3fs>=0.5.2" \
+ && /usr/local/bin/fix-permissions $HOME \
 # R JAVA PATH FIX ========================================================
  && R CMD javareconf
 
