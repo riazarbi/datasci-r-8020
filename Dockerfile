@@ -30,7 +30,9 @@ ARG r_packages=" \
     plotly \
     # spatial
     sf \
-    drake \
+    stars \
+    terra \
+    #drake \
     #targets \ COMMENT: using github for now to benefit from arrow support
     tarchetypes \
     "
