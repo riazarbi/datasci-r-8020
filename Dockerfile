@@ -90,6 +90,7 @@ RUN  install2.r --skipinstalled --error  --ncpus 3 --deps TRUE -l $R_LIBS_SITE  
 
 # NOT IN CRAN ================
 RUN R -e "remotes::install_github('ropensci/targets', dependencies = TRUE)" \
+ && R -e "remotes::install_github('riazarbi/diffdfs', dependencies = TRUE)" \
  && rm -rf /tmp/*
 #RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
 
