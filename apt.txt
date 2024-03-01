@@ -1,0 +1,11 @@
+libsodium-dev
+libmariadb-dev
+libsecret-1-dev
+libpq-dev
+libudunits2-dev 
+libpq-dev 
+libmagick++-dev 
+libzmq3-dev 
+pandoc 
+gdal-bin 
+perl

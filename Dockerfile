@@ -1,102 +1,30 @@
-FROM riazarbi/datasci-gui-minimal:20230620203028
+FROM riazarbi/datasci-gui-minimal:20240301125310
 LABEL authors="Riaz Arbi,Gordon Inggs"
 
 USER root
 
-# ARGS ===========================================================================
-
-ARG r_packages=" \
-    devtools \
-    tidyverse \
-    arrow \
-    reticulate \
-    skimr \
-    caret \
-    openxlsx \
-  # Extrafont is for skimr
-    extrafont \
-    kableExtra \
-    RPresto \
-    ckanr \
-    pryr \
-    # h3 dependency
-    digest \
-    Rcpp \
-    cli \
-    # DB utils
-    rJava \
-    RJDBC \
-    # graphics 
-    plotly \
-    # spatial
-    sf \
-    terra \
-    #drake \
-    #targets \ COMMENT: using github for now to benefit from arrow support
-    tarchetypes \
-    "
-RUN echo $r_packages
-RUN echo $R_LIBS_SITE 
 # For TinyTex
 ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux
-
-# For arrow to install bindings
-#ENV LIBARROW_BINARY=true
-#ENV LIBARROW_MINIMAL=false
-ENV NOT_CRAN=true
 
 # DEPENDENCIES ===================================================================
 ADD init_kableextra.Rmd /
 
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get clean && \
-    DEBIAN_FRONTEND=noninteractive \
-    apt-get update && \
-    apt-get install -y \
-    libcairo2-dev \
-    libudunits2-dev \
-    libpq-dev \
-    libmagick++-dev \
-    libzmq3-dev \
-# pandoc for PDF rendering
-    pandoc \
-# for pkgdown
-    libharfbuzz-dev libfribidi-dev \
-# sf system packages
-# && apt-get install -y software-properties-common \
-# && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
- && DEBIAN_FRONTENG=noninteractive \
-    apt-get update \
- && apt-get install -y \
-    libudunits2-dev \
-    libgdal-dev \
-    libgeos-dev \
-    libproj-dev \
-    gdal-bin \
-# && apt-get purge -y software-properties-common \
-# Clean out cache
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* \
- && rm -rf /tmp/*
-
-# Increase Magick resource limits
-RUN sed -i '/policy domain="resource" name="memory"/c\  <policy domain="resource" name="memory" value="10GiB"/>' /etc/ImageMagick-6/policy.xml
-RUN sed -i '/policy domain="resource" name="disk"/c\  <policy domain="resource" name="disk" value="10GiB"/>' /etc/ImageMagick-6/policy.xml
-
 # INSTALL R PACKAGES ========================================================
-# CRAN =======================
 
-RUN  install2.r --skipinstalled --error  --ncpus 3 --deps TRUE -l $R_LIBS_SITE  $r_packages 
+COPY apt.txt .
 
-# NOT IN CRAN ================
-RUN R -e "remotes::install_github('ropensci/targets', dependencies = TRUE)" \
- && R -e "remotes::install_github('riazarbi/diffdfs', dependencies = TRUE)" \
- && rm -rf /tmp/*
-#RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
+RUN echo "Checking for 'apt.txt'..." \
+        ; if test -f "apt.txt" ; then \
+        apt-get update --fix-missing > /dev/null\
+        && xargs -a apt.txt apt-get install --yes \
+        && apt-get clean > /dev/null \
+        && rm -rf /var/lib/apt/lists/* \
+        && rm -rf /tmp/* \
+        ; fi
 
-# TEMPORARY PATCH FOR AWS S3 R PACKAGE NOT WORKING WITH NEW REGIONS ==========
-RUN R -e "remotes::install_github('cityofcapetown/aws.s3.patch', dependencies = TRUE)" \
- && rm -rf /tmp/*
+# Install R dependencies
+COPY install.R .
+RUN if [ -f install.R ]; then R --quiet -f install.R; fi
 
 # h3-r for uber h3 hex traversal
 RUN git clone --single-branch --branch "master" https://github.com/crazycapivara/h3-r.git \
@@ -110,10 +38,15 @@ RUN git clone --single-branch --branch "master" https://github.com/crazycapivara
   && python3 -m pip install h3 \
   && rm -rf /tmp/*
 
+# Increase Magick resource limits
+RUN sed -i '/policy domain="resource" name="memory"/c\  <policy domain="resource" name="memory" value="10GiB"/>' /etc/ImageMagick-6/policy.xml
+RUN sed -i '/policy domain="resource" name="disk"/c\  <policy domain="resource" name="disk" value="10GiB"/>' /etc/ImageMagick-6/policy.xml
+
+
 # TEX AND MICROSOFT FONTS ================================================
 # Install and setup Tex via tinytex
 ENV CTAN_REPO="https://ctan.math.ca/tex-archive/systems/texlive/tlnet/"
-RUN echo tmp && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
+RUN echo tmp && wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" \
   | sh -s - --admin --no-path
 
 RUN mv ~/.TinyTeX /opt/TinyTeX \
