@@ -1,4 +1,4 @@
-FROM riazarbi/datasci-gui-minimal:20230620203028
+FROM riazarbi/datasci-gui-minimal:20240301125310
 LABEL authors="Riaz Arbi,Gordon Inggs"
 
 USER root
