@@ -9,7 +9,7 @@ on:
 
 jobs:
   docker:
-    runs-on: self-hosted
+    runs-on: ubuntu
     steps:
       -
         name: Checkout
