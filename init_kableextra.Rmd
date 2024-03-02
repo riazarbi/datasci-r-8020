@@ -8,6 +8,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, echo = F}
+update.packages(ask = FALSE, checkBuilt = TRUE)
+tinytex::tlmgr_update()
+```
+
+```{r echo = F}
+tinytex::reinstall_tinytex()
+```
+
+```{r, echo = F}
 
 library(kableExtra)
 
