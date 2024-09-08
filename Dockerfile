@@ -35,7 +35,7 @@ RUN git clone --single-branch --branch "master" https://github.com/crazycapivara
   && cd .. \
   && rm -rf h3-r \
 # Python failover
-  && python3 -m pip install h3 \
+  && python3 -m pip install h3 --break-system-packages \
   && rm -rf /tmp/*
 
 # Increase Magick resource limits
@@ -78,14 +78,14 @@ RUN Rscript -e "rmarkdown::render('/init_kableextra.Rmd')" \
  && rm -rf /tmp/*
  
 # PYTHON REQUIREMENTS FOR CCT DB-UTILS ===================================
-RUN python3 -m pip install "pandas>=1.2.0" \
- && python3 -m pip install "minio>=7.0.1" \
- && python3 -m pip install "pyodbc>=4.0.25" \
- && python3 -m pip install "pyhdb>=0.3.4" \
- && python3 -m pip install  "python-magic>=0.4.15" \
- && python3 -m pip install "pyarrow>=3.0.0" \
- && python3 -m pip install "fsspec>=0.8.5" \
- && python3 -m pip install "s3fs>=0.5.2" \
+RUN python3 -m pip install "pandas>=1.2.0" --break-system-packages \
+ && python3 -m pip install "minio>=7.0.1" --break-system-packages \
+ && python3 -m pip install "pyodbc>=4.0.25" --break-system-packages \
+ && python3 -m pip install "pyhdb>=0.3.4" --break-system-packages \
+ && python3 -m pip install  "python-magic>=0.4.15" --break-system-packages \
+ && python3 -m pip install "pyarrow>=3.0.0" --break-system-packages \
+ && python3 -m pip install "fsspec>=0.8.5" --break-system-packages \
+ && python3 -m pip install "s3fs>=0.5.2" --break-system-packages \
  && /usr/local/bin/fix-permissions $HOME \
 # R JAVA PATH FIX ========================================================
  && R CMD javareconf
