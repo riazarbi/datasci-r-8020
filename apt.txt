@@ -9,3 +9,4 @@ libzmq3-dev
 pandoc 
 gdal-bin 
 perl
+libmysqlclient-dev
